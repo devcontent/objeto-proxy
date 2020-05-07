@@ -6,7 +6,10 @@ class ContatosController {
 		precisar buscar um elemento no DOM */
 		let $ = document.querySelector.bind(document);
 
-		this._listaDeContatos = new ListaDeContatos();
+		this._listaDeContatos = new ListaDeContatos(listaDeContatos =>
+			this._contatosView.update(listaDeContatos)
+		);
+
 		this._contatosView = new ContatosView($('.tabela'));
 
 		//Criando alguns contatos somente para ter algo na tabela.
@@ -14,9 +17,6 @@ class ContatosController {
 		this._listaDeContatos.adiciona(new Contato('Emily', 'emily@email.com', '(41)994561432'));
 		this._listaDeContatos.adiciona(new Contato('Tiago', 'tiago@email.com', '(43)980304527'));
 		this._listaDeContatos.adiciona(new Contato('Valeska', 'valeska@email.com', '(48)973026387'));
-
-		//Pedindo para a View se atualizar
-		this._contatosView.update(this._listaDeContatos);
 
 		//Buscando os campos no DOM
 		this._inputNome = $('#nome');
@@ -28,14 +28,12 @@ class ContatosController {
 
 		event.preventDefault();
 		this._listaDeContatos.adiciona(this._criaContato());
-		this._contatosView.update(this._listaDeContatos);
 		this._limpaFormulario();
 	}
 
 	apaga() {
 
 		this._listaDeContatos.apaga();
-		this._contatosView.update(this._listaDeContatos);
 	}
 
 	_criaContato() {
