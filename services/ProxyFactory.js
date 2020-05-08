@@ -3,6 +3,7 @@ class ProxyFactory {
 	static create(objeto, props, acao) {
 
 		return new Proxy(objeto, {
+
 			get(target, prop, receiver) {
 
 				if(ProxyFactory._ehFuncao(target[prop]) && props.includes(prop)) {
