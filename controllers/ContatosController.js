@@ -8,17 +8,17 @@ class ContatosController {
 
 		let self = this;
 		this._listaDeContatos = new Proxy(new ListaDeContatos(), {
-		  get(target, prop, receiver) {
+			get(target, prop, receiver) {
 
-		    if(typeof(target[prop]) == typeof(Function) && ['adiciona', 'apaga'].includes(prop)) {
-		      return function() {
-		        Reflect.apply(target[prop], target, arguments);
-		        self._contatosView.update(target);
-		      }
-		    }
+				if(self._ehFuncao(target[prop]) && ['adiciona', 'apaga'].includes(prop)) {
+					return function() {
+						Reflect.apply(target[prop], target, arguments);
+						self._contatosView.update(target);
+					}
+				}
 
-		    return Reflect.get(target, prop, receiver);
-		  }
+				return Reflect.get(target, prop, receiver);
+			}
 		});
 
 		this._contatosView = new ContatosView($('.tabela'));
@@ -61,5 +61,9 @@ class ContatosController {
 		this._inputEmail.value = '';
 		this._inputTelefone.value = '';
 		this._inputNome.focus();
-	}	
+	}
+
+	_ehFuncao(func) {
+		return typeof(func) == typeof(Function);
+	}
 }
