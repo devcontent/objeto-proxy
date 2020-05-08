@@ -6,9 +6,20 @@ class ContatosController {
 		precisar buscar um elemento no DOM */
 		let $ = document.querySelector.bind(document);
 
-		this._listaDeContatos = new ListaDeContatos(listaDeContatos =>
-			this._contatosView.update(listaDeContatos)
-		);
+		let self = this;
+		this._listaDeContatos = new Proxy(new ListaDeContatos(), {
+		  get(target, prop, receiver) {
+
+		    if(typeof(target[prop]) == typeof(Function) && ['adiciona', 'apaga'].includes(prop)) {
+		      return function() {
+		        Reflect.apply(target[prop], target, arguments);
+		        self._contatosView.update(target);
+		      }
+		    }
+
+		    return Reflect.get(target, prop, receiver);
+		  }
+		});
 
 		this._contatosView = new ContatosView($('.tabela'));
 
