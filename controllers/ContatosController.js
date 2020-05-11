@@ -6,20 +6,11 @@ class ContatosController {
 		precisar buscar um elemento no DOM */
 		let $ = document.querySelector.bind(document);
 
-		let self = this;
-		this._listaDeContatos = new Proxy(new ListaDeContatos(), {
-			get(target, prop, receiver) {
-
-				if(self._ehFuncao(target[prop]) && ['adiciona', 'apaga'].includes(prop)) {
-					return function() {
-						Reflect.apply(target[prop], target, arguments);
-						self._contatosView.update(target);
-					}
-				}
-
-				return Reflect.get(target, prop, receiver);
-			}
-		});
+		this._listaDeContatos = ProxyFactory.create(
+			new ListaDeContatos(),
+			['adiciona', 'apaga'],
+			model => this._contatosView.update(model)
+		);
 
 		this._contatosView = new ContatosView($('.tabela'));
 
